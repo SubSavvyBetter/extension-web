@@ -2,9 +2,11 @@ body {
     font-family: Arial, sans-serif;
     padding: 10px;
     text-align: center;
+    color: white;
+    background-color : #2D2D52;  
   }
   h1 {
-    color: #0078d7;
+    color: #04C971;
   }
   button {
     background-color: #04C971;
@@ -19,7 +21,7 @@ body {
     background-color: #04C971;
   }
   form {
-    text-align: left;
+    text-align: center;
   }
   label {
     display: block;
@@ -30,4 +32,7 @@ body {
     padding: 5px;
     margin-top: 5px;
   }
+  
+
+
   

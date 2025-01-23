@@ -9,7 +9,11 @@
     "background": {
         "service_worker": "background.js"
     },
-    "permissions": ["storage", "activeTab", "scripting"],
+    "permissions": [
+    "notifications",
+    "storage",
+    "tabs"],
+
     "action": {
       "default_popup": "popup.html",
       "default_icon": "logo.png"
