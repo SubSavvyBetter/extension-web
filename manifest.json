@@ -2,9 +2,12 @@
     "manifest_version": 3,
     "name": "SubSavvy",
     "version": "1.0",
-    "description": "Une extension SubSavvy pour ajouter les abonnements !",
+    "description": "Gérez vos abonnements directement depuis votre navigateur.",
     "icons": {
       "16": "logo.png"
+    },
+    "background": {
+        "service_worker": "background.js"
     },
     "permissions": ["storage", "activeTab", "scripting"],
     "action": {
