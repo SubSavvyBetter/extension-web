@@ -1,0 +1,24 @@
+{
+    "manifest_version": 3,
+    "name": "SubSavvy",
+    "version": "1.0",
+    "description": "Une extension SubSavvy pour ajouter les abonnements !",
+    "icons": {
+      "16": "logo.png"
+    },
+    "permissions": ["storage", "activeTab", "scripting"],
+    "action": {
+      "default_popup": "popup.html",
+      "default_icon": "logo.png"
+    },
+
+    "content_scripts": [
+    {
+        "matches": ["<all_urls>"],
+        "js": ["content.js"]
+    }
+    ]
+
+  }
+  
+  
