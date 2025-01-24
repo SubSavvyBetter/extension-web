@@ -2,11 +2,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // Vérifie si l'utilisateur est connecté en cherchant le token
     chrome.storage.local.get("token", (data) => {
       if (data.token) {
-        // Si l'utilisateur est connecté, affiche le formulaire d'ajout d'abonnement
-        showAddSubscriptionForm();
+        showSubscriptionList(); // Affiche la liste des abonnements
       } else {
-        // Si l'utilisateur n'est pas connecté, affiche le formulaire de connexion
-        showLoginForm();
+        showLoginForm(); // Affiche le formulaire de connexion
       }
     });
   });
@@ -15,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function showLoginForm() {
     const contentDiv = document.getElementById("content");
     contentDiv.innerHTML = `
+      <h3>Connexion</h3>
       <form id="login-form">
         <label>Nom d'utilisateur :
           <input type="text" id="username" required />
@@ -39,36 +38,83 @@ document.addEventListener("DOMContentLoaded", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "accept": "*/*",
+          accept: "*/*",
         },
-        body: JSON.stringify({
-          username: username,
-          password: password
-        }),
+        body: JSON.stringify({ username, password }),
       })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.token) {
-          // Si le token est renvoyé, le stocker dans chrome.storage
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Connexion échouée !");
+          }
+          return response.json();
+        })
+        .then((data) => {
           chrome.storage.local.set({ token: data.token }, () => {
             alert("Connexion réussie !");
-            window.close(); // Ferme la pop-up après la connexion réussie
+            showSubscriptionList(); // Affiche la liste des abonnements
           });
-        } else {
-          alert("Échec de la connexion");
-        }
-      })
-      .catch((error) => {
-        console.error("Erreur lors de la connexion :", error);
-        alert("Erreur de connexion");
-      });
+        })
+        .catch((error) => {
+          console.error("Erreur lors de la connexion :", error);
+          alert("Nom d'utilisateur ou mot de passe incorrect.");
+        });
     });
+  }
+  
+  // Fonction pour afficher la liste des abonnements
+  function showSubscriptionList() {
+    const contentDiv = document.getElementById("content");
+    contentDiv.innerHTML = `
+      <h3>Mes abonnements</h3>
+      <ul id="subscriptions-list"></ul>
+      <button id="add-subscription-button">Ajouter un abonnement</button>
+    `;
+  
+    // Récupère le token
+    chrome.storage.local.get("token", (data) => {
+      const token = data.token;
+  
+      // Requête pour récupérer les abonnements
+      fetch("https://api.subsavvy.xyz/subscriptions", {
+        method: "GET",
+        headers: {
+          Authorization: token,
+          Accept: "*/*",
+        },
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Erreur lors de la récupération des abonnements.");
+          }
+          return response.json();
+        })
+        .then((subscriptions) => {
+          const list = document.getElementById("subscriptions-list");
+          list.innerHTML = ""; // Vide la liste avant d'ajouter les abonnements
+  
+          subscriptions.forEach((sub) => {
+            const li = document.createElement("li");
+            li.textContent = `${sub.name} - ${sub.price} €`;
+            list.appendChild(li);
+          });
+        })
+        .catch((error) => {
+          console.error("Erreur lors de la récupération des abonnements :", error);
+          alert("Impossible de charger vos abonnements.");
+        });
+    });
+  
+    // Gestion du bouton "Ajouter un abonnement"
+    document
+      .getElementById("add-subscription-button")
+      .addEventListener("click", showAddSubscriptionForm);
   }
   
   // Fonction pour afficher le formulaire d'ajout d'abonnement
   function showAddSubscriptionForm() {
     const contentDiv = document.getElementById("content");
     contentDiv.innerHTML = `
+      <h3>Ajouter un abonnement</h3>
       <form id="add-subscription-form">
         <label>Nom de l'abonnement :
           <input type="text" id="name" required />
@@ -85,7 +131,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <label>Date de fin :
           <input type="date" id="end_date" required />
         </label>
-        <button type="submit">Ajouter l'abonnement</button>
+        <button type="submit">Ajouter</button>
+        <button type="button" id="cancel-button">Annuler</button>
       </form>
     `;
   
@@ -103,43 +150,49 @@ document.addEventListener("DOMContentLoaded", () => {
         end_date: new Date(document.getElementById("end_date").value).toISOString(),
       };
   
-      // Appeler la fonction d'ajout d'abonnement avec les données du formulaire
+      // Envoie les données pour ajouter un abonnement
       addSubscription(subscriptionData);
     });
+  
+    // Gestion du bouton "Annuler"
+    document
+      .getElementById("cancel-button")
+      .addEventListener("click", showSubscriptionList);
   }
   
   // Fonction pour ajouter un abonnement avec le token
   function addSubscription(subscriptionData) {
-    // Récupère le token stocké dans chrome.storage
     chrome.storage.local.get("token", (data) => {
       const token = data.token;
+  
       if (!token) {
-        alert("Veuillez d'abord vous connecter !");
+        alert("Veuillez vous reconnecter !");
         return;
       }
   
-      // Envoie de la requête pour ajouter un abonnement avec le token dans l'en-tête
       fetch("https://api.subsavvy.xyz/subscriptions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,  // Ajoute le token au header
-          "accept": "*/*"
+          Authorization: token,
+          Accept: "*/*",
         },
         body: JSON.stringify(subscriptionData),
       })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Erreur lors de l'ajout de l'abonnement.");
+          }
+          return response.json();
+        })
+        .then(() => {
           alert("Abonnement ajouté avec succès !");
-        } else {
-          alert("Erreur lors de l'ajout de l'abonnement");
-        }
-      })
-      .catch((error) => {
-        console.error("Erreur lors de l'ajout de l'abonnement :", error);
-        alert("Erreur de connexion");
-      });
+          showSubscriptionList(); // Recharge la liste après ajout
+        })
+        .catch((error) => {
+          console.error("Erreur lors de l'ajout de l'abonnement :", error);
+          alert("Une erreur est survenue. Réessayez plus tard.");
+        });
     });
   }
   
