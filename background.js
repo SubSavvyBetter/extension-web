@@ -6,6 +6,7 @@ const loginKeywords = [
   "user", "logon", "log-on", "secure"
 ];
 
+// Écoute des changements dans les onglets
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === "complete" && tab.url) {
     const currentTabUrl = tab.url.toLowerCase(); // Convertir l'URL en minuscule pour éviter les problèmes de casse
@@ -16,12 +17,12 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (hasLoginKeywordInUrl) {
       console.log("Système de connexion détecté via l'URL :", currentTabUrl);
 
-      // Récupérer le token stocké dans chrome.storage.local
+      // Vérifier si l'utilisateur est connecté en récupérant le token
       chrome.storage.local.get("token", (data) => {
         const token = data.token;
         if (!token) {
           console.log("Utilisateur non connecté. Impossible de récupérer les abonnements.");
-          return;
+          return; // L'utilisateur n'est pas connecté, on arrête ici
         }
 
         // Requête pour récupérer tous les abonnements depuis l'API
@@ -46,7 +47,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
             if (!matchedService) {
               // Si aucun abonnement ne correspond, afficher une notification
-              chrome.notifications.create({
+              chrome.notifications.create("addSubscriptionReminder", {
                 type: "basic",
                 iconUrl: "logo.png", // Remplacez par le chemin vers l'icône de votre extension
                 title: "Abonnement non trouvé",
@@ -64,5 +65,13 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     } else {
       console.log("Aucun mot-clé de connexion détecté dans l'URL :", currentTabUrl);
     }
+  }
+});
+
+// Écoute des clics sur les notifications
+chrome.notifications.onClicked.addListener((notificationId) => {
+  if (notificationId === "addSubscriptionReminder") {
+    chrome.tabs.create({ url: "https://subsavvy.xyz" }); // Ouvre un onglet avec l'URL spécifiée
+    chrome.notifications.clear(notificationId); // Efface la notification après le clic
   }
 });
