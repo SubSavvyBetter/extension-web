@@ -13,12 +13,8 @@ function showLoginForm() {
   contentDiv.innerHTML = `
     <h3>Connexion</h3>
     <form id="login-form">
-      <label>Nom d'utilisateur :
-        <input type="text" id="username" required />
-      </label>
-      <label>Mot de passe :
-        <input type="password" id="password" required />
-      </label>
+      <input type="text" id="username" placeholder="nom d'utilisateur" required />
+      <input type="password" id="password" placeholder="mot de passe" required />
       <button type="submit">Se connecter</button>
     </form>
   `;
@@ -62,7 +58,9 @@ function showSubscriptionList() {
   contentDiv.innerHTML = `
     <h3>Mes abonnements</h3>
     <ul id="subscriptions-list"></ul>
-    <button id="add-subscription-button">Ajouter un abonnement</button>
+    <button id="subscription-add-button">
+      <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill=white fill-rule="evenodd" clip-rule="evenodd"><path d="M11.5 0c6.347 0 11.5 5.153 11.5 11.5s-5.153 11.5-11.5 11.5-11.5-5.153-11.5-11.5 5.153-11.5 11.5-11.5zm0 1c5.795 0 10.5 4.705 10.5 10.5s-4.705 10.5-10.5 10.5-10.5-4.705-10.5-10.5 4.705-10.5 10.5-10.5zm.5 10h6v1h-6v6h-1v-6h-6v-1h6v-6h1v6z"/></svg>
+    </button>
   `;
 
   chrome.storage.local.get("token", (data) => {
@@ -92,9 +90,10 @@ function showSubscriptionList() {
           li.style.justifyContent = "space-between";
 
           li.innerHTML = `
-            <span>${sub.name} - ${sub.price} €</span>
+            <span class="subscription-name">${sub.name}</span>
+            <span class="subscription-price">${sub.price} €</span>
             <button class="delete-button" data-id="${sub.id}" style="background-color: red; color: white; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer;">
-              🗑️ Supprimer
+              🗑️
             </button>
           `;
 
@@ -111,7 +110,7 @@ function showSubscriptionList() {
   });
 
   document
-    .getElementById("add-subscription-button")
+    .getElementById("subscription-add-button")
     .addEventListener("click", showAddSubscriptionForm);
 }
 
@@ -131,12 +130,8 @@ function showAddSubscriptionForm() {
   contentDiv.innerHTML = `
     <h3>Ajouter un abonnement</h3>
     <form id="add-subscription-form">
-      <label>Nom de l'abonnement :
-        <input type="text" id="name" required />
-      </label>
-      <label>Prix (€) :
-        <input type="number" id="price" required />
-      </label>
+      <input type="text" id="name" placeholder="Nom de l'abonnement" required />
+      <input type="number" id="price" placeholder="Prix (€)" required />
       <label>Période d'essai :
         <input type="checkbox" id="trial" />
       </label>

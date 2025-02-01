@@ -1,38 +1,139 @@
 body {
-    font-family: Arial, sans-serif;
-    padding: 10px;
-    text-align: center;
-    color: white;
-    background-color : #2D2D52;  
-  }
-  h1 {
-    color: #04C971;
-  }
-  button {
-    background-color: #04C971;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-  }
-  button:hover {
-    background-color: #04C971;
-  }
-  form {
-    text-align: center;
-  }
-  label {
-    display: block;
-    margin-bottom: 10px;
-  }
-  input {
-    width: 100%;
-    padding: 5px;
-    margin-top: 5px;
-  }
-  
+  width: 400px;
+  height: 500px;
+  font-family: 'Roboto', serif;
+  padding: 10px;
+  text-align: center;
+  background-color: #1E1B2E;
+}
+
+input {
+  width: calc(100% - 10px);
+  padding: 8px;
+  margin-top: 25px;
+  border: 1px solid #fff;
+  border-radius: 10px;
+  box-sizing: border-box;
+  background-color: transparent;
+  color: #fff;
+}
+
+input::placeholder{
+  color: #bbb;
+}
+
+#login-form {
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #2d2d52;
+  padding: 10px;
+  margin-top: 20px;
+  border-radius: 8px;
+}
+
+#login-form input {
+  max-width: 250px;
+}
+
+h3 {
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  font-size: x-large;
+}
+
+#login-form button {
+  background-color: #04C971;
+  width: 30%;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 30px;
+  font-weight: bold;
+}
+
+#login-form button:hover {
+  background-color: #04C971;
+}
+
+#subscriptions-list {
+  list-style: none;
+  padding: 0;
+}
+
+#subscriptions-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #2d2d52;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1px solid #444;
+}
+
+.subscription-name {
+  color: #fff;
+  font-size: large;
+  font-weight: bold;
+  flex: 1;
+  text-align: left;
+  padding-left: 10px;
+}
+
+.subscription-price {
+  color: #fff;
+  font-size: medium;
+  margin-right: 10px;
+}
+
+.delete-button {
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: small;
+}
+
+.delete-button:hover {
+  background-color: darkred;
+}
+
+#subscription-add-button {
+  background-color: #2d2d52;
+  width: 50%;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 30px;
+  font-weight: bold;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+#subscription-add-button:hover {
+  background-color: #4a4a92;
+  box-shadow: 0px 4px 10px rgba(74, 74, 146, 0.5);
+  transform: scale(1.05);
+}
+
+input[type="date"] {
+  color: #bbb; /* Default text color */
+  font-family: inherit;
+}
+
+input[type="date"]:focus,
+input[type="date"]:valid {
+  color: #fff;
+}
 
 
   
