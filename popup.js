@@ -11,7 +11,10 @@ document.addEventListener("DOMContentLoaded", () => {
 function showLoginForm() {
   const contentDiv = document.getElementById("content");
   contentDiv.innerHTML = `
-    <h3>Connexion</h3>
+    <div class="login-header">
+      <img src="logo.png" alt="Logo" class="logo">
+      <h3>Connexion</h3>
+    </div>
     <form id="login-form">
       <input type="text" id="username" placeholder="nom d'utilisateur" required />
       <input type="password" id="password" placeholder="mot de passe" required />
@@ -129,24 +132,34 @@ function showAddSubscriptionForm() {
   const contentDiv = document.getElementById("content");
   contentDiv.innerHTML = `
     <h3>Ajouter un abonnement</h3>
-    <form id="add-subscription-form">
+    <form id="adding-subscription-form">
       <input type="text" id="name" placeholder="Nom de l'abonnement" required />
       <input type="number" id="price" placeholder="Prix (€)" required />
-      <label>Période d'essai :
-        <input type="checkbox" id="trial" />
-      </label>
-      <label>Date de début :
+
+      <div class="date-input-container">
+        <label for="start_date" class="date-label">Date de début</label>
         <input type="date" id="start_date" required />
-      </label>
-      <label>Date de fin :
+      </div>
+
+      <div class="date-input-container">
+        <label for="end_date" class="date-label">Date de fin</label>
         <input type="date" id="end_date" required />
-      </label>
-      <button type="submit">Ajouter</button>
-      <button type="button" id="cancel-button">Annuler</button>
+      </div>
+      <div id="add-sub-bottom">
+        <div id="free-trial">
+          <input type="checkbox" id="trial" />
+          <label>Essai</label>
+        </div>
+
+        <div id="subscription-buttons">
+          <button type="submit">Ajouter</button>
+          <button type="button" id="cancel-button">Annuler</button>
+        </div>
+      /<div>
     </form>
   `;
 
-  const form = document.getElementById("add-subscription-form");
+  const form = document.getElementById("adding-subscription-form");
   form.addEventListener("submit", (event) => {
     event.preventDefault();
 
@@ -233,3 +246,4 @@ function deleteSubscription(subscriptionId) {
       });
   });
 }
+
